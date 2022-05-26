@@ -1,0 +1,4 @@
+{
+  "widgetLabel": "Histogram",
+  "barLabel": "Počet stĺpcov: {count}. Minimálna hodnota dát stĺpca: {minValue}. Maximálna hodnota dát stĺpca: {maxValue}"
+}
