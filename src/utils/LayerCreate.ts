@@ -13,6 +13,7 @@ import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import BuildingSceneLayer from '@arcgis/core/layers/BuildingSceneLayer';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import WebTileLayer from '@arcgis/core/layers/WebTileLayer';
 
 interface LayerFactory {
   [type: string]: (props: any) => __esri.Layer;
@@ -45,6 +46,9 @@ let layerFactory: LayerFactory = {
   },
   scene: (props: __esri.SceneLayerProperties) => {
     return new SceneLayer(props);
+  },
+  'web-tile': (props: __esri.WebTileLayerProperties) => {
+    return new WebTileLayer(props);
   },
 };
 

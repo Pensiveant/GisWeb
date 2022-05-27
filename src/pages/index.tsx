@@ -4,40 +4,74 @@ import esriConfig from '@arcgis/core/config.js';
 import ArcMapView from '@/components/ArcGis/ArcMapView';
 import ArcSceneView from '@/components/ArcGis/ArcSceneView';
 import Map from '@arcgis/core/Map';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import gisConfig from '@/config/gisConfig';
 import LayerCreate from '@/utils/LayerCreate';
-import WebScene from '@arcgis/core/WebScene';
+import Basemap from '@arcgis/core/Basemap';
+import Extent from '@arcgis/core/geometry/Extent';
 
 esriConfig.assetsPath = './arcgis/assets';
 
 export default function IndexPage() {
-  const [viewProps, setViewProps] = useState({
-    map: new WebScene({
-      portalItem: {
-        id: 'f477c289e93347aba6a0c052bfe0e0a4',
-      },
-    }),
-  });
+  const [baseMap, setBaseMap] = useState<__esri.Basemap | undefined>();
+  useEffect(() => {
+    const { basemaps } = gisConfig;
+    constructorBaseMap(basemaps);
+  }, []);
+
+  async function constructorBaseMap(basemaps: any) {
+    if (basemaps.length === 0) {
+      return;
+    }
+    let baseLayers: any[] = [];
+    const baseLayersConfig = basemaps[0].baselayers;
+    for (let i = 0, len = baseLayersConfig.length; i < len; i++) {
+      const layerProperties = { ...baseLayersConfig[i] };
+      delete layerProperties.type;
+      const layerItem = await LayerCreate(
+        baseLayersConfig[i].type,
+        layerProperties,
+      );
+      baseLayers.push(layerItem);
+    }
+
+    let basemap = new Basemap({
+      ...basemaps[0],
+      baseLayers: baseLayers,
+    });
+    setBaseMap(basemap);
+  }
 
   return (
     <div className={styles.indexPage}>
-      <ArcSceneView
-        viewProps={viewProps}
-        onLoad={(view) => {
-          let layer = LayerCreate('scene', {
-            id: 'sumx',
-            elevationInfo: {
-              mode: 'absolute-height',
-              offset: 15,
-            },
-            title: '南方美谷方案模型',
-            url: 'https://tiles.arcgis.com/tiles/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Esri_Admin_Building/SceneServer',
-          });
-          if (layer) {
-            view.map.add(layer);
-          }
-        }}
-      />
+      {baseMap ? (
+        <ArcMapView
+          viewProps={{
+            map: new Map({
+              basemap: baseMap,
+            }),
+          }}
+          onLoad={(view) => {
+            const { initExtent, buinessLayers: layers } = gisConfig;
+            view.goTo(
+              new Extent({
+                ...initExtent,
+                spatialReference: view.spatialReference,
+              }),
+            );
+            // 移除所有业务图层
+            view.map.removeAll();
+            let buinessLayers: Array<any> = [];
+            for (let i = 0, len = layers.length; i < len; i++) {
+              const layerProperties: any = { ...layers[i] };
+              delete layerProperties.type;
+              const layerItem = LayerCreate(layers[i].type, layerProperties);
+              buinessLayers.push(layerItem);
+            }
+            view.map.addMany(buinessLayers);
+          }}
+        />
+      ) : null}
     </div>
   );
 }
