@@ -10,6 +10,8 @@ import LayerCreate from '@/utils/LayerCreate';
 import Basemap from '@arcgis/core/Basemap';
 import Extent from '@arcgis/core/geometry/Extent';
 import Draw from '@/utils/draw';
+import ThreeRender from '@/utils/ThreeRender';
+import * as externalRenderers from '@arcgis/core/views/3d/externalRenderers';
 
 esriConfig.assetsPath = './arcgis/assets';
 
@@ -46,7 +48,7 @@ export default function IndexPage() {
   return (
     <div className={styles.indexPage}>
       {baseMap ? (
-        <ArcMapView
+        <ArcSceneView
           viewProps={{
             map: new Map({
               basemap: baseMap,
@@ -71,11 +73,15 @@ export default function IndexPage() {
             }
             view.map.addMany(buinessLayers);
 
-            // 绘制工具测试
-            const drawInstance = new Draw({ view, mode: 'clear' });
-            drawInstance.draw('polygon').then((graphic: any) => {
-              const { geometry } = graphic;
-            });
+            // // 绘制工具测试
+            // const drawInstance = new Draw({ view, mode: 'clear' });
+            // drawInstance.draw('polygon').then((graphic: any) => {
+            //   const { geometry } = graphic;
+            // });
+
+            // threejs
+            const threeRender = new ThreeRender(view);
+            externalRenderers.add(view, threeRender);
           }}
         />
       ) : null}

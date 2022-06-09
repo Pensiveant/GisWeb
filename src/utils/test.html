@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>ArcGIS API在视图中渲染Three.js场景</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.23/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.23/"></script>
+
+    <script type="module">
+      import * as THREE from 'https://threejs.org/build/three.module.js';
+      require([
+        'esri/Map',
+        'esri/views/SceneView',
+        'esri/views/3d/externalRenderers',
+        'esri/geometry/SpatialReference',
+      ], function(Map, SceneView, externalRenderers, SpatialReference) {
+        const map = new Map({
+          basemap: 'topo-vector',
+        });
+
+        const view = new SceneView({
+          container: 'viewDiv',
+          map: map,
+          center: [105, 29],
+          zoom: 3,
+        });
+     
+        const myRenderer = {
+          renderer: null, // three.js 渲染器
+          camera: null, // three.js 相机
+          scene: null, // three.js 中的场景
+          ambient: null, // three.js中的环境光
+          sun: null, // three.js中的平行光源，模拟太阳光
+          ufo: null, // ufo
+
+          setup: function(context) {
+            this.renderer = new THREE.WebGLRenderer({
+              context: context.gl, // 可用于将渲染器附加到已有的渲染环境(RenderingContext)中
+              premultipliedAlpha: false, // renderer是否假设颜色有 premultiplied alpha. 默认为true
+            });
+            this.renderer.setPixelRatio(window.devicePixelRatio); // 设置设备像素比。通常用于避免HiDPI设备上绘图模糊
+            this.renderer.setViewport(0, 0, view.width, view.height); // 视口大小设置
+            
+            // 防止Three.js清除ArcGIS JS API提供的缓冲区。
+            this.renderer.autoClearDepth = false; // 定义renderer是否清除深度缓存
+            this.renderer.autoClearStencil = false; // 定义renderer是否清除模板缓存
+            this.renderer.autoClearColor = false; // 定义renderer是否清除颜色缓存
+
+            // ArcGIS JS API渲染自定义离屏缓冲区，而不是默认的帧缓冲区。
+            // 我们必须将这段代码注入到three.js运行时中，以便绑定这些缓冲区而不是默认的缓冲区。
+            const originalSetRenderTarget = this.renderer.setRenderTarget.bind(
+              this.renderer
+            );
+            this.renderer.setRenderTarget = function(target) {
+              originalSetRenderTarget(target);
+              if (target == null) {
+                // 绑定外部渲染器应该渲染到的颜色和深度缓冲区
+                context.bindRenderTarget();
+              }
+            };
+
+            this.scene = new THREE.Scene(); // 场景
+            this.camera = new THREE.PerspectiveCamera(); // 相机
+
+            this.ambient = new THREE.AmbientLight(0xffffff, 0.5); // 环境光
+            this.scene.add(this.ambient); // 把环境光添加到场景中
+            this.sun = new THREE.DirectionalLight(0xffffff, 0.5); // 平行光（模拟太阳光）
+            this.scene.add(this.sun); // 把太阳光添加到场景中
+
+            // 添加坐标轴辅助工具
+            const axesHelper = new THREE.AxesHelper(10000000);
+            this.scene.add(axesHelper);
+
+            // 添加长方体
+            const geometry = new THREE.BoxGeometry(100000, 100000, 100000);
+            const material = new THREE.MeshBasicMaterial({
+              color: 0xff0000,
+            });
+            const cube = new THREE.Mesh(geometry, material);
+
+            const posEst = [103, 32, 100000]; //  输入位置 [经度, 纬度, 高程]
+            var destCoordinates = [0, 0, 0];
+            externalRenderers.toRenderCoordinates(
+              view,
+              posEst,
+              0,
+              SpatialReference.WGS84,
+              destCoordinates,
+              0,
+              1,
+            );
+            cube.position.set(destCoordinates[0], destCoordinates[1], destCoordinates[2]);
+
+            this.cube = cube;
+            this.scene.add(this.cube);
+            context.resetWebGLState();
+
+          },
+          render: function(context) {
+            // 更新相机参数
+            const cam = context.camera;
+            this.camera.position.set(cam.eye[0], cam.eye[1], cam.eye[2]);
+            this.camera.up.set(cam.up[0], cam.up[1], cam.up[2]);
+            this.camera.lookAt(
+              new THREE.Vector3(cam.center[0], cam.center[1], cam.center[2])
+            );
+            // 投影矩阵可以直接复制
+            this.camera.projectionMatrix.fromArray(cam.projectionMatrix);
+            // 更新UFO
+            this.cube.rotation.x += 0.01;
+            this.cube.rotation.y += 0.01;
+            // 绘制场景
+            this.renderer.state.reset();
+            context.bindRenderTarget(); 
+            this.renderer.render(this.scene, this.camera);
+            // 请求重绘视图。
+            externalRenderers.requestRender(view); 
+            // cleanup
+            context.resetWebGLState();
+          },
+        };
+        // 注册renderer
+        externalRenderers.add(view, myRenderer);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
