@@ -10,11 +10,13 @@ import LayerCreate from '@/utils/LayerCreate';
 import Basemap from '@arcgis/core/Basemap';
 import Extent from '@arcgis/core/geometry/Extent';
 import Draw from '@/utils/draw';
+import LayerList from './LayerList/index';
 
 esriConfig.assetsPath = './arcgis/assets';
 
 export default function IndexPage() {
   const [baseMap, setBaseMap] = useState<__esri.Basemap | undefined>();
+
   useEffect(() => {
     const { basemaps } = gisConfig;
     constructorBaseMap(basemaps);
@@ -46,13 +48,14 @@ export default function IndexPage() {
   return (
     <div className={styles.indexPage}>
       {baseMap ? (
-        <ArcMapView
+        <ArcSceneView
           viewProps={{
             map: new Map({
               basemap: baseMap,
             }),
           }}
           onLoad={(view) => {
+            window.view = view;
             const { initExtent, buinessLayers: layers } = gisConfig;
             view.goTo(
               new Extent({
@@ -70,15 +73,10 @@ export default function IndexPage() {
               buinessLayers.push(layerItem);
             }
             view.map.addMany(buinessLayers);
-
-            // 绘制工具测试
-            const drawInstance = new Draw({ view, mode: 'clear' });
-            drawInstance.draw('polygon').then((graphic: any) => {
-              const { geometry } = graphic;
-            });
           }}
         />
       ) : null}
+      <LayerList />
     </div>
   );
 }

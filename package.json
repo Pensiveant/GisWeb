@@ -23,6 +23,7 @@
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
     "@arcgis/core": "^4.23.7",
+    "echarts": "^5.3.2",
     "react": "17.x",
     "react-dom": "17.x",
     "umi": "^3.5.24"
