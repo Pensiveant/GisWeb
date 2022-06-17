@@ -8,4 +8,5 @@ export default defineConfig({
   routes: [{ path: '/', component: '@/pages/index' }],
   fastRefresh: {},
   ...appConfig,
+  mfsu: {}, // 开启 mfsu 功能，解决打包慢问题，注意：放在单独文件appConfig中会报错
 });
