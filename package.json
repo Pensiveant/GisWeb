@@ -1,13 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "start": "umi dev",
-    "build": "umi build",
-    "build:prod": "cross-env NODE_ENV1=prod umi build",
+    "start": "npm run copy &&umi dev",
+    "build": "npm run copy &&umi build",
+    "build:prod": "cross-env NODE_ENV1=prod npm run copy &&umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "test:coverage": "umi-test --coverage",
+    "copy": "ncp ./node_modules/@arcgis/core/assets ./public/arcgis/assets"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -23,6 +24,7 @@
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
     "@arcgis/core": "^4.23.7",
+    "ncp": "^2.0.0",
     "react": "17.x",
     "react-dom": "17.x",
     "umi": "^3.5.24"
