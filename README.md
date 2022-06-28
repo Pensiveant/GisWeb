@@ -33,7 +33,7 @@ GisWeb
 │   │   └── assets              # arcgis API 引入的资源assets
 │   ├── assets
 │   │   └── favicon.ico         # umijs favicon配置
-│   └── font
+│   └── font                    # 自定义字体引入，配合styles配置使用
 ├── src
 │   ├── components              # 存放公共组件
 │   │   ├── ArcGis
