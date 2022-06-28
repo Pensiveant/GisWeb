@@ -16,6 +16,24 @@ const appConfig: any = {
   // 路由配置
   history: { type: 'hash' },
   routes,
+  styles: [
+    // 引入字体
+    `@font-face {
+      font-family: PingFang SC;
+      src: url("./font/PingFang Regular.ttf");
+    }
+  
+      @font-face {
+      font-family: PingFangSC-Medium;
+      src: url("./font/PingFang Medium.ttf");
+    }
+      @font-face {
+      font-family: PangMenZhengDao;
+      src: url("./font/PangMenZhengDaoBiaoTiTi-1.ttf");
+    }`,
+  ],
+  // 打包配置
+  publicPath: './',
 };
 
 export default appConfig;
