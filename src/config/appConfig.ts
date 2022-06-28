@@ -1,4 +1,6 @@
-const appConfig = {
+import routes from './routes';
+
+const appConfig: any = {
   title: 'webGIS开发框架', // 系统名称，参考umi配置
   favicon: '/assets/favicon.ico', // favicon 地址，参考umi配置
   define: {
@@ -11,6 +13,9 @@ const appConfig = {
       changeOrigin: true,
     },
   },
+  // 路由配置
+  history: { type: 'hash' },
+  routes,
 };
 
 export default appConfig;
