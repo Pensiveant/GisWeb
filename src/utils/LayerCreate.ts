@@ -14,7 +14,7 @@ import BuildingSceneLayer from '@arcgis/core/layers/BuildingSceneLayer';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import WebTileLayer from '@arcgis/core/layers/WebTileLayer';
-
+import IntegratedMeshLayer from '@arcgis/core/layers/IntegratedMeshLayer';
 interface LayerFactory {
   [type: string]: (props: any) => __esri.Layer;
 }
@@ -50,6 +50,10 @@ let layerFactory: LayerFactory = {
   'web-tile': (props: __esri.WebTileLayerProperties) => {
     return new WebTileLayer(props);
   },
+  'integrated-mesh': (props: __esri.IntegratedMeshLayerProperties) => {
+    // 比如，加载倾斜摄影
+    return new IntegratedMeshLayer(props);
+  },
 };
 
 let LayerCreate = function (type: string, props: any) {
@@ -57,7 +61,7 @@ let LayerCreate = function (type: string, props: any) {
   if (types.includes(type)) {
     return layerFactory[type](props);
   } else {
-    console.log('无类型图层创建函数，请自行扩展。');
+    console.log('无该类型图层创建函数，请自行扩展。');
   }
 };
 
