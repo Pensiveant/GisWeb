@@ -25,6 +25,9 @@ const ArcSceneView: React.FC<ArcSceneViewProps> = ({
   useEffect(() => {
     if (sceneViewContainerRef.current) {
       if (viewRef.current) {
+        viewRef.current.popu = null;
+        viewRef.current.map = null;
+        viewRef.current.ui.remove(viewRef.current.ui.components);
         viewRef.current.destroy();
         viewRef.current = undefined;
       }
