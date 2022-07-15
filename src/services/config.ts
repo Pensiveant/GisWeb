@@ -3,9 +3,9 @@
  * @Author: Pensiveant
  * @Date: 2022-06-14 10:12:20
  */
-
+const isProduct = process.env.APP_ENV === 'production';
 const requestConfig = {
-  prefix: process.env.APP_ENV === 'development' ? '/rghg/ems' : 'XXX', // 接口前缀
+  prefix: isProduct ? '/rghg/ems' : 'XXX', // 接口前缀：第一项为产品端配置；后面一项为开发端配置
   timeout: 1000,
 };
 
