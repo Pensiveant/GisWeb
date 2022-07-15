@@ -5,7 +5,7 @@
  */
 
 const requestConfig = {
-  prefix: NODE_ENV === 'development' ? '/rghg/ems' : 'XXX', // 接口前缀
+  prefix: process.env.APP_ENV === 'development' ? '/rghg/ems' : 'XXX', // 接口前缀
   timeout: 1000,
 };
 

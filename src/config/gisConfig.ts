@@ -91,7 +91,7 @@ const productConfig = {
 };
 //#endregion
 
-const isProduct = NODE_ENV === 'prod';
+const isProduct = process.env.APP_ENV === 'production';
 const currentConfig = isProduct ? productConfig : devConfig;
 let gisConfig: GisConfig = {
   initExtent: {
