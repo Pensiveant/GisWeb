@@ -19,18 +19,29 @@ export default function IndexPage() {
   const [baseMap, setBaseMap] = useState<__esri.Basemap | undefined>();
   const dispatch = useDispatch();
   useEffect(() => {
-    const { basemaps } = gisConfig;
-    constructorBaseMap(basemaps);
+    constructorBaseMap();
   }, []);
 
-  async function constructorBaseMap(basemaps: any) {
+  // 构建底图
+  async function constructorBaseMap() {
+    const { basemaps } = gisConfig;
     if (basemaps.length === 0) {
       return;
     }
     let baseLayers: any[] = [];
-    const baseLayersConfig = basemaps[0].baselayers;
+    let visibleBaseMap;
+    for (let i = 0; i < basemaps.length; i++) {
+      if (basemaps[i].visible) {
+        visibleBaseMap = basemaps[i];
+      }
+    }
+    if (!visibleBaseMap) {
+      console.log('请配置底图！');
+      return;
+    }
+    let { baseLayers: baseLayersConfig } = visibleBaseMap;
     for (let i = 0, len = baseLayersConfig.length; i < len; i++) {
-      const layerProperties = { ...baseLayersConfig[i] };
+      const layerProperties: any = { ...baseLayersConfig[i] };
       delete layerProperties.type;
       const layerItem = await LayerCreate(
         baseLayersConfig[i].type,
@@ -40,7 +51,7 @@ export default function IndexPage() {
     }
 
     let basemap = new Basemap({
-      ...basemaps[0],
+      ...visibleBaseMap,
       baseLayers: baseLayers,
     });
     setBaseMap(basemap);
@@ -57,12 +68,8 @@ export default function IndexPage() {
           }}
           onLoad={(view) => {
             const { initExtent, buinessLayers: layers } = gisConfig;
-            view.goTo(
-              new Extent({
-                ...initExtent,
-                spatialReference: view.spatialReference,
-              }),
-            );
+            const extent = Extent.fromJSON(initExtent);
+            view.extent = extent;
             // 移除所有业务图层
             view.map.removeAll();
             let buinessLayers: Array<any> = [];
