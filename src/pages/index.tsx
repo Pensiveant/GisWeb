@@ -4,20 +4,22 @@ import esriConfig from '@arcgis/core/config.js';
 import ArcMapView from '@/components/ArcGis/ArcMapView';
 import ArcSceneView from '@/components/ArcGis/ArcSceneView';
 import Map from '@arcgis/core/Map';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import gisConfig from '@/config/gisConfig';
 import LayerCreate from '@/utils/LayerCreate';
 import Basemap from '@arcgis/core/Basemap';
 import Extent from '@arcgis/core/geometry/Extent';
 import Draw from '@/utils/draw';
 import services from '@/services/index';
-import { useDispatch } from 'umi';
+import { useDispatch, useSelector } from 'umi';
+import ViewClick from './ViewClick';
 
 esriConfig.assetsPath = './arcgis/assets';
 
 export default function IndexPage() {
   const [baseMap, setBaseMap] = useState<__esri.Basemap | undefined>();
   const dispatch = useDispatch();
+
   useEffect(() => {
     constructorBaseMap();
   }, []);
@@ -90,6 +92,7 @@ export default function IndexPage() {
           }}
         />
       ) : null}
+      <ViewClick />
     </div>
   );
 }
