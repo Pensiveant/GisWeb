@@ -1,0 +1,78 @@
+.button {
+  border: 1px solid;
+  color: #fff;
+  border-radius: 0;
+  padding: 0 11px;
+}
+
+.button_default {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.25) 100%
+  );
+  border-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45),
+      rgba(255, 255, 255, 0)
+    )
+    1 1;
+  color: rgba(206, 219, 240, 1);
+}
+
+.button_primary {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 141, 255, 0) 0%,
+    rgba(0, 141, 255, 0.45) 100%
+  );
+  border-image: linear-gradient(
+      180deg,
+      rgba(0, 141, 255, 1),
+      rgba(0, 141, 255, 0)
+    )
+    1 1;
+}
+
+.button_active {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 255, 255, 0) 0%,
+    rgba(0, 255, 255, 0.45) 100%
+  );
+  border-image: linear-gradient(
+      180deg,
+      rgba(0, 255, 255, 1),
+      rgba(0, 255, 255, 0)
+    )
+    1 1;
+}
+
+.myButton {
+  .button();
+
+  &:hover,
+  &:focus {
+    .button();
+  }
+
+  &.myButton_default {
+    .button_default();
+  }
+
+  &.myButton_primary {
+    .button_primary();
+  }
+
+  &.myButton_active {
+    .button_active();
+  }
+}
+
+// 当只有 icon 时，避免hover icon 消失
+:global {
+  .custom-btn-icon-only.custom-btn-sm:focus,
+  .custom-btn-icon-only.custom-btn-sm:hover {
+    padding: 0 !important;
+  }
+}

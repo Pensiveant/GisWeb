@@ -1,0 +1,96 @@
+/**
+ * 应急标绘 组件样式
+ *
+ */
+@padding: 8px;
+@main-color: rgba(0, 141, 255, 1);
+@labelColor: rgba(206, 219, 240, 1);
+
+.all-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emergency-plot {
+  // width: 100%;
+  padding: 24px;
+  background: linear-gradient(
+    134deg,
+    rgba(2, 52, 109, 0.85) 0%,
+    rgba(6, 23, 56, 0.85) 100%
+  );
+  border-radius: 4px;
+  width: 264px;
+
+  .plot-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    padding-bottom: @padding;
+    border-bottom: 1px solid fade(@main-color, 10%);
+
+    .plot-item {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      // border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: fade(@main-color, 10%);
+      margin-right: 16px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      color: @labelColor;
+      .all-center();
+
+      &:nth-of-type(5n) {
+        margin-right: 0;
+      }
+
+      &.plot-item-selected {
+        background: @main-color;
+        color: #fff;
+
+        .iconfont {
+          color: #fff;
+        }
+      }
+    }
+
+    .text-item {
+      font-size: 12px;
+      user-select: none;
+    }
+  }
+
+  .symbol-editor {
+    width: 100%;
+    // border-top: 1px solid #ccc;
+    // border-bottom: 1px solid #ccc;
+    padding: 0;
+    max-height: 262px;
+    overflow: hidden;
+  }
+
+  .btn-wrap {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: end;
+    text-align: right;
+
+    .btn {
+      white-space: nowrap;
+
+      &:first-child {
+        margin-right: 16px;
+      }
+    }
+
+    .save-btn {
+      background-color: @main-color;
+      color: #fff;
+    }
+  }
+}

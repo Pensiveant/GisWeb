@@ -13,6 +13,7 @@ import Draw from '@/utils/draw';
 import services from '@/services/index';
 import { useDispatch, useSelector } from 'umi';
 import ViewClick from './ViewClick';
+import Tools from './Tools';
 
 esriConfig.assetsPath = './arcgis/assets';
 
@@ -93,6 +94,7 @@ export default function IndexPage() {
         />
       ) : null}
       <ViewClick />
+      <Tools />
     </div>
   );
 }
