@@ -133,10 +133,13 @@ let layerFactory: LayerFactory = {
   },
 };
 
-let LayerCreate = function (type: string, props: any) {
+let LayerCreate = function (props: any) {
+  const { type } = props;
+  const propsClone = { ...props };
+  delete propsClone.type;
   const types = Object.keys(layerFactory);
   if (types.includes(type)) {
-    return layerFactory[type](props);
+    return layerFactory[type](propsClone);
   } else {
     console.log('无该类型图层创建函数，请自行扩展。');
   }
