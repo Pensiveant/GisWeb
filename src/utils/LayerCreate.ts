@@ -145,4 +145,38 @@ let LayerCreate = function (props: any) {
   }
 };
 
-export default LayerCreate;
+/**
+ * 天地图矢量底图
+ * @param key 天地图官网申请的key
+ * @returns
+ */
+function getTDTVectorLayer({ key }: { key: string }) {
+  const mapLayer = new WebTileLayer({
+    urlTemplate: `http://{subDomain}.tianditu.com/vec_w/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&FORMAT=tiles&TILEMATRIXSET=w&STYLE=default&LAYER=vec&TILEMATRIX={level}&TILEROW={row}&TILECOL={col}&tk=${key}`,
+    subDomains: ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'],
+    title: '天地图矢量',
+  });
+  const noteLayer = new WebTileLayer({
+    urlTemplate: `http://{subDomain}.tianditu.com/cva_w/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&FORMAT=tiles&TILEMATRIXSET=w&STYLE=default&LAYER=cva&TILEMATRIX={level}&TILEROW={row}&TILECOL={col}&tk=${key}`,
+    subDomains: ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'],
+    title: '天地图矢量注记',
+  });
+  return [mapLayer, noteLayer];
+}
+
+// 天地图影像底图
+function getTDTImageLayer({ key }: { key: string }) {
+  const mapLayer = new WebTileLayer({
+    urlTemplate: `http://{subDomain}.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={level}&TileRow={row}&TileCol={col}&style=default&format=tiles&tk=${key}`,
+    subDomains: ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'],
+    title: '天地图影像',
+  });
+  const noteLayer = new WebTileLayer({
+    urlTemplate: `http://{subDomain}.tianditu.com/cia_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=cia&tileMatrixSet=w&TileMatrix={level}&TileRow={row}&TileCol={col}&style=default&format=tiles&tk=${key}`,
+    subDomains: ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'],
+    title: '天地图影像注记',
+  });
+  return [mapLayer, noteLayer];
+}
+
+export { LayerCreate, getTDTVectorLayer, getTDTImageLayer };

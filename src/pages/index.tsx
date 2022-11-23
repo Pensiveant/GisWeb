@@ -6,7 +6,7 @@ import ArcSceneView from '@/components/ArcGis/ArcSceneView';
 import Map from '@arcgis/core/Map';
 import { useState, useEffect, useRef } from 'react';
 import gisConfig from '@/config/gisConfig';
-import LayerCreate from '@/utils/LayerCreate';
+import { LayerCreate, getTDTImageLayer } from '@/utils/LayerCreate';
 import Basemap from '@arcgis/core/Basemap';
 import Extent from '@arcgis/core/geometry/Extent';
 import Draw from '@/utils/draw';
@@ -45,12 +45,7 @@ export default function IndexPage() {
     }
     let { baseLayers: baseLayersConfig } = visibleBaseMap;
     for (let i = 0, len = baseLayersConfig.length; i < len; i++) {
-      const layerProperties: any = { ...baseLayersConfig[i] };
-      delete layerProperties.type;
-      const layerItem = await LayerCreate(
-        baseLayersConfig[i].type,
-        layerProperties,
-      );
+      const layerItem = await LayerCreate(baseLayersConfig[i]);
       baseLayers.push(layerItem);
     }
 
@@ -78,9 +73,7 @@ export default function IndexPage() {
             view.map.removeAll();
             let buinessLayers: Array<any> = [];
             for (let i = 0, len = layers.length; i < len; i++) {
-              const layerProperties: any = { ...layers[i] };
-              delete layerProperties.type;
-              const layerItem = LayerCreate(layers[i].type, layerProperties);
+              const layerItem = LayerCreate(layers[i]);
               buinessLayers.push(layerItem);
             }
             view.map.addMany(buinessLayers);
